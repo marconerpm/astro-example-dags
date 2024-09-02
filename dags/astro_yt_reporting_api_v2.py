@@ -123,14 +123,14 @@ def upload_file_to_s3(filename, bucket_name, s3_key, aws_conn_id=AWS_CONN_ID):
     print(f"File uploaded to S3: {s3_key}")
 
 
-def check_file_exists_in_s3(bucket_name, file_key, aws_conn_id='aws_default'):
+def check_file_exists_in_s3(bucket_name, file_key, aws_conn_id='aws_marco'):
     """
     Checks if a specific file exists within an S3 bucket.
 
     Args:
         bucket_name (str): The name of the S3 bucket.
         file_key (str): The key (path) of the file in the S3 bucket.
-        aws_conn_id (str, optional): The Airflow connection ID for the AWS credentials. Default is 'aws_default'.
+        aws_conn_id (str, optional): The Airflow connection ID for the AWS credentials. Default is 'aws_marco'.
 
     Returns:
         bool: True if the file exists, False otherwise.
