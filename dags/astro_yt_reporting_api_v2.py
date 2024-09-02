@@ -16,17 +16,36 @@ AWS_CONN_ID = "aws_marco"
 
 
 def get_authenticated_service(token=None):
+    """
+    Fetches Google service account credentials from an S3 path and creates an authenticated service for the YouTube Reporting API.
 
-    credentials_json = Variable.get("ONERPM-LEGACY-CREDENTIALS", deserialize_json=True)
+    Args:
+        token (str, optional): A refresh token to renew the credentials. Default is None.
+
+    Returns:
+        googleapiclient.discovery.Resource: An authenticated service object for the YouTube Reporting API.
+        or 
+        str: An access token for the YouTube Reporting API.
+    """
+    s3_hook = S3Hook(aws_conn_id=AWS_CONN_ID)
+    key = 'resources/onerpm-legacy-credentials.json'
+    file_path = '/tmp/onerpm-legacy-credentials.json'
+
+    print(f"Downloading credentials file from S3 bucket '1r-live-airflow' to {file_path}")
+    s3_hook.get_conn().download_file('1r-live-airflow', key, file_path)
+    print("Credentials file downloaded successfully.")
 
     print("Creating credentials object from the downloaded file.")
-    credentials = service_account.Credentials.from_service_account_info(
-        credentials_json,
-        scopes=[
-            'https://www.googleapis.com/auth/yt-analytics-monetary.readonly',
-            'https://www.googleapis.com/auth/yt-analytics.readonly'
-        ]
+    credentials = service_account.Credentials.from_service_account_file(
+        file_path, scopes=['https://www.googleapis.com/auth/yt-analytics-monetary.readonly', 'https://www.googleapis.com/auth/yt-analytics.readonly']
     )
+
+    # Remove the temporary file
+    try:
+        os.remove(file_path)
+        print(f'{file_path} has been deleted from Airflow server.')
+    except Exception as e:
+        print(e)
     
     if token:
         auth_req = google.auth.transport.requests.Request()
