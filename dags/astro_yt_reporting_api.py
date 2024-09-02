@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+from airflow.models import Variable
 from datetime import datetime, timedelta
 import os
 from google.oauth2 import service_account
