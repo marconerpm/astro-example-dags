@@ -54,6 +54,8 @@ def get_all_channels(network, source_table):
 
     print(f'{len(all_channels_df)} channels found for {network} network.')
 
+    return all_channels_df
+
 
 def get_report(content_owner_id, content_owner_name, report_type_id, mode, network, **kwargs):
     
