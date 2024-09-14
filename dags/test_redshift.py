@@ -51,13 +51,33 @@ def get_processing_log(content_owner_id, report_type_id):
     
     return processing_log_df
 
+def get_all_channels(network, source_table):
+
+    # Define the SQL query to fetch data from MySQL
+    all_channels_sql = f"""
+    SELECT 
+        channel_uc_id
+    FROM content.channel_yts
+    WHERE network = '{network}'
+    AND is_active = 1
+    """
+
+    # Convert the MySQL data to a pandas DataFrame
+    all_channels_df = get_df_from_db(sql=all_channels_sql, db='mysql', db_conn_id='airflow-prod-aurora')
+
+    print(f'{len(all_channels_df)} channels found for {network} network.')
+
+    return all_channels_df 
+
 
 def get_report(content_owner_id, content_owner_name, report_type_id, mode, network, **kwargs):
     
     processing_log_df = get_processing_log(content_owner_id=content_owner_id, report_type_id=report_type_id)
     print(f"Processing log for {report_type_id}:")
-    print(processing_log_df)      
-                
+    print(processing_log_df)
+     
+    all_channels_df = get_all_channels(network=network, source_table='content.channel_yts')  
+       
 
 def task_handler(task_name, content_owner_id, content_owner_name, report_type_id, mode, network):
     return PythonOperator(
