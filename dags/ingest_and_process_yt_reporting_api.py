@@ -10,7 +10,6 @@ from airflow.providers.amazon.aws.hooks.redshift_sql import RedshiftSQLHook
 from datetime import datetime, timedelta
 import pandas as pd
 
-postgres_conn_id = 'redshift-datalake-prod'
 
 def get_df_from_db(sql, db, db_conn_id):
     
@@ -40,7 +39,7 @@ def get_processing_log(content_owner_id, report_type_id):
     AND report_type_id = '{report_type_id}'
     """
 
-    processing_log_df = get_df_from_db(sql=sql, db='redshift', db_conn_id=postgres_conn_id)
+    processing_log_df = get_df_from_db(sql=sql, db='redshift', db_conn_id='redshift-datalake-prod')
     
     return processing_log_df
 
